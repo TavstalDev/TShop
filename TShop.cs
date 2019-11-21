@@ -103,42 +103,42 @@ namespace TPlugins.TShop
             string i7 = null;
 
             if (sh0 != null)
-                i0 = Assets.find(EAssetType.ITEM, sh0.Id).name + " (ID:" + sh0.Id + ")";
+                i0 = Assets.find(EAssetType.ITEM, sh0.Id).name.ToString() + " (ID:" + sh0.Id + ")";
             else
                 i0 = Translate("no_more_products");
 
             if (sh1 != null)
-                i1 = Assets.find(EAssetType.ITEM, sh1.Id).name + " (ID:" + sh1.Id + ")";
+                i1 = Assets.find(EAssetType.ITEM, sh1.Id).name.ToString() + " (ID:" + sh1.Id + ")";
             else
                 i1 = Translate("no_more_products");
 
             if (sh2 != null)
-                i2 = Assets.find(EAssetType.ITEM, sh2.Id).name + " (ID:" + sh2.Id + ")";
+                i2 = Assets.find(EAssetType.ITEM, sh2.Id).name.ToString() + " (ID:" + sh2.Id + ")";
             else
                 i2 = Translate("no_more_products");
 
             if (sh3 != null)
-                i3 = Assets.find(EAssetType.ITEM, sh3.Id).name + " (ID:" + sh3.Id + ")";
+                i3 = Assets.find(EAssetType.ITEM, sh3.Id).name.ToString() + " (ID:" + sh3.Id + ")";
             else
                 i3 = Translate("no_more_products");
 
             if (sh4 != null)
-                i4 = Assets.find(EAssetType.ITEM, sh4.Id).name + " (ID:" + sh4.Id + ")";
+                i4 = Assets.find(EAssetType.ITEM, sh4.Id).name.ToString() + " (ID:" + sh4.Id + ")";
             else
                 i4 = Translate("no_more_products");
 
             if (sh5 != null)
-                i5 = Assets.find(EAssetType.ITEM, sh5.Id).name + " (ID:" + sh5.Id + ")";
+                i5 = Assets.find(EAssetType.ITEM, sh5.Id).name.ToString() + " (ID:" + sh5.Id + ")";
             else
                 i5 = Translate("no_more_products");
 
             if (sh6 != null)
-                i6 = Assets.find(EAssetType.ITEM, sh6.Id).name + " (ID:" + sh6.Id + ")";
+                i6 = Assets.find(EAssetType.ITEM, sh6.Id).name.ToString() + " (ID:" + sh6.Id + ")";
             else
                 i6 = Translate("no_more_products");
 
             if (sh7 != null)
-                i7 = Assets.find(EAssetType.ITEM, sh7.Id).name + " (ID:" + sh7.Id + ")";
+                i7 = Assets.find(EAssetType.ITEM, sh7.Id).name.ToString() + " (ID:" + sh7.Id + ")";
             else
                 i7 = Translate("no_more_products");
 
@@ -154,16 +154,16 @@ namespace TPlugins.TShop
             if (i != null)
             {
                 TShopComponent cp = p.GetComponent<TShopComponent>();
-                string cost = "Vásárlási ár/db: " + i.BuyCost + "|Eladási ár/db: " + i.SellCost;
+                string cost = Translate("Buy_Price") + i.BuyCost + "|" + Translate("Sell_Price") + i.SellCost;
                 cost = cost.Replace("|", "" + System.Environment.NewLine);
 
-                string description = "Hamarosan leírás a tárgyról";
+                string description = Translate("WIP");
 
                 string amt = cp.amt.ToString();
                 cp.lookingid = i.Id;
                 EffectManager.askEffectClearByID(Configuration.Instance.Main2ID, p.CSteamID);
                 EffectManager.askEffectClearByID(Configuration.Instance.Main1ID, p.CSteamID);
-                EffectManager.sendUIEffect(Configuration.Instance.BuySellID, 700, p.CSteamID, false, Assets.find(EAssetType.ITEM, ID).name + " (ID:" + ID + ")", cost, description, amt);
+                EffectManager.sendUIEffect(Configuration.Instance.BuySellID, 700, p.CSteamID, false, Assets.find(EAssetType.ITEM, ID).name.ToString() + " (ID:" + ID + ")", cost, description, amt);
             }
             else
             {
@@ -392,7 +392,10 @@ namespace TPlugins.TShop
                 { "successfully_changed", "[TShop] The {0} is successfully changed in the shop! (ID: {1}, New buy price: {2}, New sell price: {3}" },
                 { "cost", "[TShop] The {0}'s ID: {1}, buy price: {2} and sell price: {3}" },
                 { "shop_is_empty", "[TShop] The shop is empty" },
-                { "no_more_products", "No more products" }
+                { "no_more_products", "No more products" },
+                { "WIP", "Work In Progess" },
+                { "Buy_Price", "Buy price: " },
+                { "Sell_Price", "Sell price: " }
             };
     }
 }
