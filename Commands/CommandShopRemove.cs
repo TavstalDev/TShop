@@ -28,14 +28,16 @@ namespace TPlugins.TShop
                 {
                     if (Is != null)
                     {
+                        Asset a = Assets.find(EAssetType.ITEM, id);
                         m.Configuration.Instance.ItemShop.Remove(Is);
                         m.Configuration.Save();
-                        UnturnedChat.Say(caller, m.Translate("successfully_removed", Assets.find(EAssetType.ITEM, id).name, id), color: m.SuccessColor);
+                        UnturnedChat.Say(caller, m.Translate("successfully_removed", ((ItemAsset)a).itemName, id), color: m.SuccessColor);
                         return;
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, m.Translate("item_isn't_added", Assets.find(EAssetType.ITEM, id).name, id), color: m.ErrorColor);
+                        Asset a = Assets.find(EAssetType.ITEM, id);
+                        UnturnedChat.Say(caller, m.Translate("item_isn't_added", ((ItemAsset)a).itemName, id), color: m.ErrorColor);
                         return;
                     }
                 }

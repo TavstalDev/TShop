@@ -35,7 +35,8 @@ namespace TPlugins.TShop
 
                 if (Is == null)
                 {
-                    UnturnedChat.Say(caller, m.Translate("item_isn't_added", Assets.find(EAssetType.ITEM, id).name, id), color: m.ErrorColor);
+                    Asset a = Assets.find(EAssetType.ITEM, id);
+                    UnturnedChat.Say(caller, m.Translate("item_isn't_added", ((ItemAsset)a).itemName, id), color: m.ErrorColor);
                     return;
                 }
                 else

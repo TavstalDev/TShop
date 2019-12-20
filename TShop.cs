@@ -25,6 +25,8 @@ namespace TPlugins.TShop
             Instance = this;
             EffectManager.onEffectTextCommitted += text;
             EffectManager.onEffectButtonClicked += button;
+            if (Configuration.Instance.AllowOpenUIWithKey)
+                PlayerInput.onPluginKeyTick += Key;
             U.Events.OnPlayerConnected += join;
             SuccessColor = UnturnedChat.GetColorFromName(Configuration.Instance.SuccessMessageColor, Palette.SERVER);
             MessageColor = UnturnedChat.GetColorFromName(Configuration.Instance.InfoMessageColor, Palette.SERVER);
@@ -42,14 +44,38 @@ namespace TPlugins.TShop
         {
             EffectManager.onEffectTextCommitted -= text;
             EffectManager.onEffectButtonClicked -= button;
+            if (Configuration.Instance.AllowOpenUIWithKey)
+                PlayerInput.onPluginKeyTick -= Key;
             U.Events.OnPlayerConnected -= join;
             Logger.Log("TShop is successfully unloaded!", color: ConsoleColor.Green);
         }
 
+        public void Key(Player player, uint simulation, byte key, bool state)
+        {
+            if (Configuration.Instance.AllowOpenUIWithKey)
+            {
+                int.TryParse(Configuration.Instance.Button, out int num);
+
+                if (key == num && state)
+                {
+                    if (!Configuration.Instance.UIEnabled)
+                        return;
+
+                    TShopComponent cp = player.GetComponent<TShopComponent>();
+                    if (!cp.UIOpened)
+                    {
+                        player.serversideSetPluginModal(true);
+                        MainEffect(UnturnedPlayer.FromPlayer(player));
+                        cp.UIOpened = true;
+                    }
+                }
+            }
+        }
+
         public void join(UnturnedPlayer player)
         {
-            if (Configuration.Instance.UIEnabled)
-                EffectManager.sendUIEffect(Configuration.Instance.OpenID, 700, player.CSteamID, false);
+            if (Configuration.Instance.UIEnabled && Configuration.Instance.OpenButtonEnabled)
+                EffectManager.sendUIEffect(Configuration.Instance.OpenID, 700, player.CSteamID, true);
         }
 
         public void text(Player player, string buttonName, string text)
@@ -104,48 +130,72 @@ namespace TPlugins.TShop
             string i7 = null;
 
             if (sh0 != null)
-                i0 = Assets.find(EAssetType.ITEM, sh0.Id).name.ToString() + " (ID:" + sh0.Id + ")";
+            {
+                Asset a = Assets.find(EAssetType.ITEM, sh0.Id);
+                i0 = ((ItemAsset)a).itemName + " (ID:" + sh0.Id + ")";
+            }
             else
                 i0 = Translate("no_more_products");
 
             if (sh1 != null)
-                i1 = Assets.find(EAssetType.ITEM, sh1.Id).name.ToString() + " (ID:" + sh1.Id + ")";
+            {
+                Asset a = Assets.find(EAssetType.ITEM, sh1.Id);
+                i1 = ((ItemAsset)a).itemName + " (ID:" + sh1.Id + ")";
+            }
             else
                 i1 = Translate("no_more_products");
 
             if (sh2 != null)
-                i2 = Assets.find(EAssetType.ITEM, sh2.Id).name.ToString() + " (ID:" + sh2.Id + ")";
+            {
+                Asset a = Assets.find(EAssetType.ITEM, sh2.Id);
+                i2 = ((ItemAsset)a).itemName + " (ID:" + sh2.Id + ")";
+            }
             else
                 i2 = Translate("no_more_products");
 
             if (sh3 != null)
-                i3 = Assets.find(EAssetType.ITEM, sh3.Id).name.ToString() + " (ID:" + sh3.Id + ")";
+            {
+                Asset a = Assets.find(EAssetType.ITEM, sh3.Id);
+                i3 = ((ItemAsset)a).itemName + " (ID:" + sh3.Id + ")";
+            }
             else
                 i3 = Translate("no_more_products");
 
             if (sh4 != null)
-                i4 = Assets.find(EAssetType.ITEM, sh4.Id).name.ToString() + " (ID:" + sh4.Id + ")";
+            {
+                Asset a = Assets.find(EAssetType.ITEM, sh4.Id);
+                i4 = ((ItemAsset)a).itemName + " (ID:" + sh4.Id + ")";
+            }
             else
                 i4 = Translate("no_more_products");
 
             if (sh5 != null)
-                i5 = Assets.find(EAssetType.ITEM, sh5.Id).name.ToString() + " (ID:" + sh5.Id + ")";
+            {
+                Asset a = Assets.find(EAssetType.ITEM, sh5.Id);
+                i5 = ((ItemAsset)a).itemName + " (ID:" + sh5.Id + ")";
+            }
             else
                 i5 = Translate("no_more_products");
 
             if (sh6 != null)
-                i6 = Assets.find(EAssetType.ITEM, sh6.Id).name.ToString() + " (ID:" + sh6.Id + ")";
+            {
+                Asset a = Assets.find(EAssetType.ITEM, sh6.Id);
+                i6 = ((ItemAsset)a).itemName + " (ID:" + sh6.Id + ")";
+            }
             else
                 i6 = Translate("no_more_products");
 
             if (sh7 != null)
-                i7 = Assets.find(EAssetType.ITEM, sh7.Id).name.ToString() + " (ID:" + sh7.Id + ")";
+            {
+                Asset a = Assets.find(EAssetType.ITEM, sh7.Id);
+                i7 = ((ItemAsset)a).itemName + " (ID:" + sh7.Id + ")";
+            }
             else
                 i7 = Translate("no_more_products");
 
             EffectManager.askEffectClearByID(Configuration.Instance.OpenID, p.CSteamID);
-            EffectManager.sendUIEffect(Configuration.Instance.Main1ID, 700, p.CSteamID, false, i0, i1, i2, i3);
-            EffectManager.sendUIEffect(Configuration.Instance.Main2ID, 710, p.CSteamID, false, i4, i5, i6, i7);
+            EffectManager.sendUIEffect(Configuration.Instance.Main1ID, 700, p.CSteamID, true, i0, i1, i2, i3);
+            EffectManager.sendUIEffect(Configuration.Instance.Main2ID, 710, p.CSteamID, true, i4, i5, i6, i7);
         }
 
         public void ItemEffect(UnturnedPlayer p, ushort ID)
@@ -155,16 +205,17 @@ namespace TPlugins.TShop
             if (i != null)
             {
                 TShopComponent cp = p.GetComponent<TShopComponent>();
+                Asset a = Assets.find(EAssetType.ITEM, ID);
                 string cost = Translate("Buy_Price") + i.BuyCost + "|" + Translate("Sell_Price") + i.SellCost;
                 cost = cost.Replace("|", "" + System.Environment.NewLine);
 
-                string description = Translate("WIP");
+                string description = ((ItemAsset)a).itemDescription;
 
                 string amt = cp.amt.ToString();
                 cp.lookingid = i.Id;
                 EffectManager.askEffectClearByID(Configuration.Instance.Main2ID, p.CSteamID);
                 EffectManager.askEffectClearByID(Configuration.Instance.Main1ID, p.CSteamID);
-                EffectManager.sendUIEffect(Configuration.Instance.BuySellID, 700, p.CSteamID, false, Assets.find(EAssetType.ITEM, ID).name.ToString() + " (ID:" + ID + ")", cost, description, amt);
+                EffectManager.sendUIEffect(Configuration.Instance.BuySellID, 700, p.CSteamID, true, ((ItemAsset)a).itemName.ToString() + " (ID:" + ID + ")", cost, description, amt);
             }
             else
             {
@@ -182,6 +233,7 @@ namespace TPlugins.TShop
             TShopComponent cp = p.GetComponent<TShopComponent>();
             if (buttonName == "tshop_open")
             {
+                cp.UIOpened = true;
                 p.Player.serversideSetPluginModal(true);
                 MainEffect(p);
             }
@@ -192,11 +244,13 @@ namespace TPlugins.TShop
             }
             if (buttonName == "tshop_exit")
             {
+                cp.UIOpened = false;
                 EffectManager.askEffectClearByID(Configuration.Instance.Main2ID, p.CSteamID);
                 EffectManager.askEffectClearByID(Configuration.Instance.Main1ID, p.CSteamID);
                 EffectManager.askEffectClearByID(Configuration.Instance.BuySellID, p.CSteamID);
                 p.Player.serversideSetPluginModal(false);
-                EffectManager.sendUIEffect(Configuration.Instance.OpenID, 700, p.CSteamID, false);
+                if (Configuration.Instance.OpenButtonEnabled)
+                    EffectManager.sendUIEffect(Configuration.Instance.OpenID, 700, p.CSteamID, true);
             }
 
             #region Shop
@@ -257,7 +311,8 @@ namespace TPlugins.TShop
 
                     if (i == null)
                     {
-                        UnturnedChat.Say(p, Translate("item_isn't_added", Assets.find(EAssetType.ITEM, id).name, id), color: ErrorColor);
+                        Asset a = Assets.find(EAssetType.ITEM, id);
+                        UnturnedChat.Say(p, Translate("item_isn't_added", ((ItemAsset)a).itemName, id), color: ErrorColor);
                         return;
                     }
                     else

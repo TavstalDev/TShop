@@ -14,5 +14,6 @@ namespace TPlugins.TShop
         public int item7 = 7;
         public ushort lookingid = 0;
         public int amt = 1;
+        public bool UIOpened = false;
     }
 }

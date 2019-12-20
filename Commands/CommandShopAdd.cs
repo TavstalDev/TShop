@@ -26,18 +26,19 @@ namespace TPlugins.TShop
                 decimal sellcost = Convert.ToDecimal(args[2]);
                 ItemShop Is = m.Configuration.Instance.ItemShop.FirstOrDefault(x => x.Id == id);
 
-                if (Assets.find(EAssetType.ITEM, id) != null && buycost != 0 && sellcost != 0)
+                if (Assets.find(EAssetType.ITEM, id) != null)
                 {
+                    Asset a = Assets.find(EAssetType.ITEM, id);
                     if (Is == null)
                     {
                         m.Configuration.Instance.ItemShop.Add(new ItemShop(id, buycost, sellcost));
                         m.Configuration.Save();
-                        UnturnedChat.Say(caller, m.Translate("successfully_added", Assets.find(EAssetType.ITEM, id).name, id, buycost.ToString(), sellcost.ToString()), color: m.SuccessColor);
+                        UnturnedChat.Say(caller, m.Translate("successfully_added", ((ItemAsset)a).itemName, id, buycost.ToString(), sellcost.ToString()), color: m.SuccessColor);
                         return;
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, m.Translate("item_already_added", Assets.find(EAssetType.ITEM, id).name, id), color: m.ErrorColor);
+                        UnturnedChat.Say(caller, m.Translate("item_already_added", ((ItemAsset)a).itemName), color: m.ErrorColor);
                         return;
                     }
                 }

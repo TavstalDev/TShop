@@ -34,7 +34,8 @@ namespace TPlugins.TShop
 
                 if (Is == null)
                 {
-                    UnturnedChat.Say(caller, m.Translate("item_isn't_added", Assets.find(EAssetType.ITEM, id).name, id), color: m.ErrorColor);
+                    Asset a = Assets.find(EAssetType.ITEM, id);
+                    UnturnedChat.Say(caller, m.Translate("item_isn't_added", ((ItemAsset)a).itemName, id), color: m.ErrorColor);
                     return;
                 }
 
@@ -48,7 +49,8 @@ namespace TPlugins.TShop
                 List<InventorySearch> l = p.Inventory.search(id, true, true);
                 if (l.Count == 0 || (l.Count < amt))
                 {
-                    UnturnedChat.Say(caller, m.Translate("not_enough_items_to_sell", amt.ToString(), Assets.find(EAssetType.ITEM, Is.Id).name), color: m.ErrorColor);
+                    Asset a = Assets.find(EAssetType.ITEM, id);
+                    UnturnedChat.Say(caller, m.Translate("not_enough_items_to_sell", amt.ToString(), ((ItemAsset)a).itemName), color: m.ErrorColor);
                     return;
                 }
                 else
@@ -90,11 +92,12 @@ namespace TPlugins.TShop
                         }
 
                         peritemprice = decimal.Round(Is.SellCost * (quality / 100.0m), 2);
-                        money += peritemprice;
+                        money = money + peritemprice;
                     }
                     //To here
                     Uconomy.Instance.Database.IncreaseBalance(p.Id, money);
-                    UnturnedChat.Say(caller, m.Translate("successfully_sell", Assets.find(EAssetType.ITEM, Is.Id).name, Uconomy.Instance.Database.GetBalance(p.Id).ToString()), color: m.SuccessColor);
+                    Asset a = Assets.find(EAssetType.ITEM, id);
+                    UnturnedChat.Say(caller, m.Translate("successfully_sell", ((ItemAsset)a).itemName, Uconomy.Instance.Database.GetBalance(p.Id).ToString()), color: m.SuccessColor);
                     return;
                 }
             }

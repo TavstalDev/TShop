@@ -28,17 +28,18 @@ namespace TPlugins.TShop
 
                 if (Assets.find(EAssetType.ITEM, id) != null && buycost != 0 && sellcost != 0)
                 {
+                    Asset a = Assets.find(EAssetType.ITEM, id);
                     if (Is != null)
                     {
                         Is.BuyCost = buycost;
                         Is.SellCost = sellcost;
                         m.Configuration.Save();
-                        UnturnedChat.Say(caller, m.Translate("successfully_changed", Assets.find(EAssetType.ITEM, id).name, id, buycost.ToString(), sellcost.ToString()), color: m.SuccessColor);
+                        UnturnedChat.Say(caller, m.Translate("successfully_changed", ((ItemAsset)a).itemName, id, buycost.ToString(), sellcost.ToString()), color: m.SuccessColor);
                         return;
                     }
                     else
                     {
-                        UnturnedChat.Say(caller, m.Translate("item_isn't_added", Assets.find(EAssetType.ITEM, id).name, id), color: m.ErrorColor);
+                        UnturnedChat.Say(caller, m.Translate("item_isn't_added", ((ItemAsset)a).itemName, id), color: m.ErrorColor);
                         return;
                     }
                 }

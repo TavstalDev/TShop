@@ -50,6 +50,7 @@ namespace TPlugins.TShop
                 {
                     for (int i = Min; i <= Max; i++)
                     {
+                        Asset a = Assets.find(EAssetType.ITEM, Config.ItemShop[i - (PageNumber - 1)].Id);
                         if (i == Max)
                         {
                             UnturnedChat.Say(caller, m.Translate("next_page", args[0].ToLower(), (PageNumber + 1)), color: m.MessageColor);
@@ -57,7 +58,7 @@ namespace TPlugins.TShop
                         }
                         else
                         {
-                            UnturnedChat.Say(caller, m.Translate("itemshop", Assets.find(EAssetType.ITEM, Config.ItemShop[i - (PageNumber - 1)].Id).name, Config.ItemShop[i - (PageNumber - 1)].Id, Config.ItemShop[i - (PageNumber - 1)].BuyCost, Config.ItemShop[i - (PageNumber - 1)].SellCost), color: m.MessageColor);
+                            UnturnedChat.Say(caller, m.Translate("itemshop", ((ItemAsset)a).itemName, Config.ItemShop[i - (PageNumber - 1)].Id, Config.ItemShop[i - (PageNumber - 1)].BuyCost, Config.ItemShop[i - (PageNumber - 1)].SellCost), color: m.MessageColor);
                         }
                     }
                 }
@@ -74,7 +75,8 @@ namespace TPlugins.TShop
                         }
                         else
                         {
-                            UnturnedChat.Say(caller, m.Translate("itemshop", Assets.find(EAssetType.ITEM, Config.ItemShop[i - (PageNumber - 1)].Id).name, Config.ItemShop[i - (PageNumber - 1)].Id, Config.ItemShop[i - (PageNumber - 1)].BuyCost, Config.ItemShop[i - (PageNumber - 1)].SellCost), color: m.MessageColor);
+                            Asset a = Assets.find(EAssetType.ITEM, Config.ItemShop[i - (PageNumber - 1)].Id);
+                            UnturnedChat.Say(caller, m.Translate("itemshop", ((ItemAsset)a).itemName, Config.ItemShop[i - (PageNumber - 1)].Id, Config.ItemShop[i - (PageNumber - 1)].BuyCost, Config.ItemShop[i - (PageNumber - 1)].SellCost), color: m.MessageColor);
                         }
                         Item++;
                     }
